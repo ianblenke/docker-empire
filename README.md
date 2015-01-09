@@ -10,7 +10,7 @@ The wetty web port is 3000, and the empserver protocol port is 6665 for empire c
 
 Passing an ECONFIG environment variable in key=value,key2=value,... format will generate an empire econfig file.
 
-If an /empserver/newcap_script doesn't yet exist, it will be created using "fairland 10 30" or "fairland ${FAIRLAND_OPTS}" if that is defined.
+If an /empserver/newcap_script doesn't yet exist, it will be created using `fairland 10 30` or `fairland ${FAIRLAND_OPTS}` if that is defined.
 
 The persistence VOLUME exported is /empserver. This can, and probably should, be mapped to a persistent docker host path or another stopped volume container, ie:
 
