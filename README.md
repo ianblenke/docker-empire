@@ -17,11 +17,11 @@ The persistence VOLUME exported is /empserver. This can, and probably should, be
     docker run -d --name empire-data ianblenke/empire echo "Backing store for empire"
     docker run -ti --rm --name empire --volumes-from empire-data -p 3000:3000 -p 6665:6665 -e FAIRLAND_OPTS="10 30" ianblenke/empire
 
-By default, "files" is run, which regenerates the game. Setting DO_NOT_RUN_FILES will prevent that from happening if run in the background after initially seeded above:
+By default, "files" is run, which regenerates the game. Setting `DO_NOT_RUN_FILES` will prevent that from happening if run in the background after initially seeded above:
 
     docker run -d --name empire --volumes-from empire-data -p 3000:3000 -p 6665:6665 -e DO_NOT_RUN_FILES=1 ianblenke/empire
 
-Now open a web browser to http://{your docker host}:3000/
+Now open a web browser to `http://{your docker host}:3000/`
 
     Country name? POGO
     Your name? peter
