@@ -21,10 +21,11 @@ RUN pip install supervisor-stdout
 
 WORKDIR /empserver
 
-EXPOSE 3000
-
 ADD run.sh /run.sh
 RUN chmod 755 /run.sh
 
-CMD /run.sh
+VOLUME /empserver
 
+EXPOSE 3000
+
+CMD /run.sh
