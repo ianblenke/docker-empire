@@ -47,8 +47,10 @@ for file in etc/empire/econfig.d/* ; do
   echo "$key $value"
 done > etc/empire/econfig
 
+# Ensure defaults
 export EMPIREHOST=${EMPIREHOST:-localhost}
 export EMPIREPORT=${EMPIREPORT:-6665}
+export PORT=${PORT:-3000}
 
 env | grep -v 'HOME\|PWD\|PATH' | while read line; do
    key="$(echo $line | cut -d= -f1)"
@@ -66,7 +68,6 @@ EOF
 
 cat <<EOF > /tmp/empire-server.sh
 #!/bin/bash
-set -x
 cd /empserver
 source /home/term/.bashrc
 if [ ! -f newcap_script ]; then
@@ -97,9 +98,18 @@ startsecs=0
 stopwaitsecs=1
 EOF
 
+cat <<EOF > /tmp/wetty.sh
+#!/bin/bash
+cd /empserver
+source /home/term/.bashrc
+exec /usr/bin/node /opt/wetty/app.js -p ${PORT}
+EOF
+
+chmod 755 /tmp/wetty.sh
+
 cat > /etc/supervisor/conf.d/wetty.conf <<EOF
 [program:wetty]
-command=/usr/bin/node /opt/wetty/app.js -p 3000
+command=/tmp/wetty.sh
 priority=10
 directory=/opt/wetty
 process_name=%(program_name)s
