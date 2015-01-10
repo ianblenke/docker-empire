@@ -3,7 +3,7 @@ MAINTAINER Ian Blenke <ian@blenke.com>
 
 # Install build dependencies
 RUN apt-get -qqy update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential autoconf automake curl groff-base supervisor python-pip screen
+    DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential autoconf automake curl groff-base supervisor python-pip screen procps net-tools bsdutils
 
 RUN chown daemon:daemon /etc/supervisor/conf.d/ /var/run/ /var/log/supervisor/
 

@@ -22,7 +22,9 @@ cd /empserver
 
 ls -la *bin*
 
-yes | ./sbin/files
+if [ ! -n "${DO_NOT_RUN_FILES}" ]; then
+  yes | ./sbin/files || true
+fi
 
 mkdir -p etc/empire/econfig.d
 
@@ -59,19 +61,21 @@ cat <<EOF > /tmp/empire-client.sh
 cd /empserver
 source /home/term/.bashrc
 cd /empserver/var/empire
-#exec /empserver/bin/empire
-exec /usr/bin/screen -x emp_server
+exec /empserver/bin/empire
 EOF
 
 cat <<EOF > /tmp/empire-server.sh
 #!/bin/bash
+set -x
 cd /empserver
 source /home/term/.bashrc
-#./sbin/fairland ${FAIRLAND_OPTS:-10 30}
-#echo "Remember to run: exec newcap_script"
-cd /empserver/var/empire
-exec /usr/bin/screen -S emp_server -D -m /bin/bash -xc 'source /home/term/.bashrc; cd /empserver; ./sbin/emp_server'
+if [ ! -f newcap_script ]; then
+  ./sbin/fairland ${FAIRLAND_OPTS:-10 30}
+fi
+exec /usr/bin/screen -S emp_server -L -D -m /bin/bash -xc 'source /home/term/.bashrc; cd /empserver; exec ./sbin/emp_server -d'
 EOF
+
+touch /empserver/screenlog.0
 
 chmod 755 /tmp/empire-client.sh /tmp/empire-server.sh
 
@@ -89,6 +93,7 @@ stdout_events_enabled=true
 stderr_events_enabled=true
 stopsignal=TERM
 exitcodes=0
+startsecs=0
 stopwaitsecs=1
 EOF
 
@@ -97,6 +102,20 @@ cat > /etc/supervisor/conf.d/wetty.conf <<EOF
 command=/usr/bin/node /opt/wetty/app.js -p 3000
 priority=10
 directory=/opt/wetty
+process_name=%(program_name)s
+autostart=true
+autorestart=true
+stdout_events_enabled=true
+stderr_events_enabled=true
+stopsignal=TERM
+stopwaitsecs=1
+EOF
+
+cat > /etc/supervisor/conf.d/tail.conf <<EOF
+[program:tail]
+command=/usr/bin/tail -f /empserver/screenlog.0
+priority=10
+directory=/tmp
 process_name=%(program_name)s
 autostart=true
 autorestart=true

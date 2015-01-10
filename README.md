@@ -2,42 +2,29 @@
 
 This is a docker image for [empire](http://www.wolfpackempire.com/) built from the sourceforge [empserver](https://empserver.sf.net) source
 
-(3) Creating a game
+The persistence VOLUME exported is /empserver. This can, and probably should, be mapped to a persistent docker host path or another stopped volume container.
 
-    * Create a configuration for your game.  make install installs one
-      in $prefix/etc/empire/econfig ($prefix is /usr/local unless you
-      chose something else with configure).  You can use pconfig to
-      create another one.
+Passing an ECONFIG environment variable in key=value,key2=value,... format will generate an empire econfig file.
 
-    * Edit your configuration file.  See doc/econfig for more
-      information.
+By default, "files" is run, which regenerates the game. Setting DO_NOT_RUN_FILES will prevent that from happening.
 
-      Unless you put your configuration file in the default location
-      (where make install installs it), you have to use -e with all
-      programs to make them use your configuration.
+If an /empserver/newcap_script doesn't yet exist, it will be created using "fairland 10 30" or "fairland ${FAIRLAND_OPTS}" if that is defined.
 
-    * Run files to set up your data directory.
+Now open a web browser to http://{your docker host}:3000/
 
-    * Run fairland to create a world.  For a sample world, try
-      `fairland 10 30'.  This creates file ./newcap_script, which will
-      be used below.  You can edit it to change country names and
-      passwords.
+    Country name? POGO
+    Your name? peter
 
-      Check out fairland's manual page for more information.
+You can then execute the fairland created script to create countries and the `visitor`/`visitor` login:
 
-    * Start the server.  For development, you want to run it with -d
-      in a debugger, see doc/debugging.  Do not use -d for a real
-      game!
+    [0:640] Command : exec /empserver/newcap_script
 
-    * Log in as deity POGO with password peter.  This guide assumes
-      you use the included client `empire', but other clients should
-      work as well.
+For help, try `info'.
 
-      For help, try `info'.
+To change the deity password, use `change re <password>'.
 
-      To change the deity password, use `change re <password>'.
+Your game is now up!
 
-    * Create countries with `exec newcap_script'.
+Anyone who hits that URL will get a unique empire client session talking to the server.
 
-    Your game is now up!
-
+Enjoy!
